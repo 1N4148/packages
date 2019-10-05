@@ -8,12 +8,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tvheadend
-PKG_VERSION:=4.0.10
-PKG_RELEASE:=4
+PKG_RELEASE:=1
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/tvheadend/tvheadend/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=f610e7d9f3bf6cff05cd73830a66ee0c74bc5291c4c9d08369364c4c681ebf23
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/tvheadend/tvheadend.git
+PKG_SOURCE_DATE:=2019-08-02
+PKG_SOURCE_VERSION:=ebb0968047b6a3aecd61b48792ab8b48a50ecb0d
 
 PKG_LICENSE:=GPL-3.0
 PKG_LICENSE_FILES:=LICENSE.md
@@ -29,7 +29,7 @@ define Package/tvheadend
   SECTION:=multimedia
   CATEGORY:=Multimedia
   TITLE:=Tvheadend is a TV streaming server for Linux
-  DEPENDS:=+libopenssl +librt +zlib +TVHEADEND_AVAHI_SUPPORT:libavahi-client $(ICONV_DEPENDS)
+  DEPENDS:=@BUILD_NLS +libopenssl +librt +zlib +TVHEADEND_AVAHI_SUPPORT:libavahi-client $(ICONV_DEPENDS)
   URL:=https://tvheadend.org
   MAINTAINER:=Jan Čermák <jan.cermak@nic.cz>
 endef
@@ -70,7 +70,13 @@ CONFIGURE_ARGS += \
 	--arch=$(ARCH) \
 	--disable-dbus_1 \
 	--disable-libav \
-	--enable-bundle
+	--enable-bundle \
+	--disable-ffmpeg_static \
+	--disable-cccam \
+	--disable-libx264 \
+	--disable-capmt \
+	--disable-constcw \
+	--disable-tvhcsa
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
@@ -78,7 +84,7 @@ define Build/Prepare
 		> $(PKG_BUILD_DIR)/debian/changelog
 endef
 
-define Package/conffiles
+define Package/tvheadend/conffiles
 /etc/config/tvheadend
 endef
 
